@@ -9,15 +9,34 @@ editor: visual
 ```{r}
 library(tidyverse)
 library(tidycensus)
+library(sf)
+
+library(help = "tidycensus") # to see built in datasets in this package
+
+census_api_key("f6daf94fd77ce75503d74974d35a7d07a52f722b", install = TRUE)
 ```
 
+Useful link: http://walker-data.com/umich-workshop/census-data-in-r/slides/#13
+
 ```{r}
+# codes for data on the housing characteristics
 housing_labels_2020 <- load_variables(year = 2020,
                "dhc",
                cache = TRUE)
+
+demographic_profile_2020 <- load_variables(year = 2020,
+               "dp",
+               cache = TRUE)
+
+# output is a table with GEOID; County NAME; VARIABLE H10_006N; COUNT of Total; Owner occupied; where Householder is Asian and alone
+dhc_test1 <- get_decennial(geography = "county",
+              variables = "H10_006N", # Total; Owner occupied; Householder Asian alone
+              state = "CA",
+              sumfile = "dhc")
 ```
 
 ```{r}
+# example code for accessing variables
 ca_ny <- get_acs(geography = "county", 
               variables = c(medincome = "B19013_001"), 
               state = c("CA", "NY"), 
@@ -26,4 +45,11 @@ ca_ny <- get_acs(geography = "county",
            sep = "\\, ",
            into = c("county", "state"))
 
+# example code for accessing housing 
+spok_vacant_2010 <- get_decennial(geography = "tract", 
+                                  variables = "H005001",
+                                  county = "Spokane", 
+                                  year = 2010, 
+                                  state = "WA", 
+                                  sumfile = "sf1")
 ```
